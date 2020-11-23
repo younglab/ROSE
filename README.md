@@ -2,7 +2,7 @@
 
 ROSE IS RELEASED UNDER THE MIT X11 LICENSE
 
-EXAMPLE ROSE DATA CAN BE FOUND HERE: <shorturl.at/nouzR>
+EXAMPLE ROSE DATA CAN BE FOUND HERE: <https://shorturl.at/nouzR>
 
 For details of this analysis see:
 
