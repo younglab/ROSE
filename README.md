@@ -2,11 +2,7 @@
 
 ROSE IS RELEASED UNDER THE MIT X11 LICENSE
 
-EXAMPLE DATA AND ADDITIONAL INFORMATION CAN BE FOUND HERE:
-
-<http://younglab.wi.mit.edu/super_enhancer_code.html>
-
-N.B. LICENSE.txt
+EXAMPLE ROSE DATA CAN BE FOUND HERE: <shorturl.at/nouzR>
 
 For details of this analysis see:
 
@@ -22,7 +18,7 @@ Please cite these papers when using this code.
 
 SOFTWARE AUTHORS: Charles Y. Lin, David A. Orlando, Brian J. Abraham
 
-CONTACT: young_computation@wi.mit.edu 
+CONTACT: <young_computation@wi.mit.edu>
 
 ACKNOWLEDGEMENTS: Graham Ruby
 
