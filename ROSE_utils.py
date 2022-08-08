@@ -126,27 +126,27 @@ def gffToBed(gff,output= ''):
     else:
         unParseTable(bed,output,'\t')
 
-def formatFolder(folderName,create=False):
+# def formatFolder(folderName,create=False):
 
-    '''
-    makes sure a folder exists and if not makes it
-    returns a bool for folder
-    '''
+#     '''
+#     makes sure a folder exists and if not makes it
+#     returns a bool for folder
+#     '''
     
-    if folderName[-1] != '/':
-        folderName +='/'
+#     if folderName[-1] != '/':
+#         folderName +='/'
 
-    try: 
-        foo = os.listdir(folderName)
-        return folderName
-    except OSError:
-        print('folder %s does not exist' % (folderName))
-        if create:
-            os.system('mkdir %s' % (folderName))
-            return folderName
-        else:
+#     try: 
+#         foo = os.listdir(folderName)
+#         return folderName
+#     except OSError:
+#         print('folder %s does not exist' % (folderName))
+#         if create:
+#             os.system('mkdir %s' % (folderName))
+#             return folderName
+#         else:
                     
-            return False 
+#             return False 
 
 
 

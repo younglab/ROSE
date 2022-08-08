@@ -1,0 +1,8 @@
+example/*
+**.pyc
+test.sh
+conversion.R
+output/*
+data/test/*
+data/HG*
+data/MM*
