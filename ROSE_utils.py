@@ -41,19 +41,19 @@ def unParseTable(table, output, sep):
 #a nested list such that list[row][col]
 #example call:
 #table = parseTable('file.txt','\t')
-def parseTable(fn, sep, header = False,excel = False):
-    fh = open(fn)
-    if header == True:
-        header = fh.readline() #disposes of the header
+# def parseTable(fn, sep, header = False,excel = False):
+#     fh = open(fn)
+#     if header == True:
+#         header = fh.readline() #disposes of the header
 
-    table = []
-    for line in fh:
-        line = line.rstrip().split(sep)
-        table.append(line)
+#     table = []
+#     for line in fh:
+#         line = line.rstrip().split(sep)
+#         table.append(line)
 
-    fh.close()
+#     fh.close()
 
-    return table
+#     return table
 
 
 def formatBed(bed,output=''):
@@ -155,63 +155,63 @@ def gffToBed(gff,output= ''):
 #==================================================================
 
 
-def makeStartDict(annotFile,geneList = []):
-    '''
-    makes a dictionary keyed by refseq ID that contains information about 
-    chrom/start/stop/strand/common name
-    '''
+# def makeStartDict(annotFile,geneList = []):
+#     '''
+#     makes a dictionary keyed by refseq ID that contains information about 
+#     chrom/start/stop/strand/common name
+#     '''
 
-    if type(geneList) == str:
-        geneList = parseTable(geneList,'\t')
-        geneList = [line[0] for line in geneList]
+#     if type(geneList) == str:
+#         geneList = parseTable(geneList,'\t')
+#         geneList = [line[0] for line in geneList]
             
-    if upper(annotFile).count('REFSEQ') == 1:
-        refseqTable,refseqDict = importRefseq(annotFile)
-        if len(geneList) == 0:
-            geneList = refseqDict.keys()
-        startDict = {}
-        for gene in geneList:
-            if refseqDict.has_key(gene) == False:
-                continue
-            startDict[gene]={}
-            startDict[gene]['sense'] = refseqTable[refseqDict[gene][0]][3]
-            startDict[gene]['chr'] = refseqTable[refseqDict[gene][0]][2]
-            startDict[gene]['start'] = getTSSs([gene],refseqTable,refseqDict)
-            if startDict[gene]['sense'] == '+':
-                startDict[gene]['end'] =[int(refseqTable[refseqDict[gene][0]][5])]
-            else:
-                startDict[gene]['end'] = [int(refseqTable[refseqDict[gene][0]][4])]
-            startDict[gene]['name'] = refseqTable[refseqDict[gene][0]][12]
-    return startDict
+#     if upper(annotFile).count('REFSEQ') == 1:
+#         refseqTable,refseqDict = importRefseq(annotFile)
+#         if len(geneList) == 0:
+#             geneList = refseqDict.keys()
+#         startDict = {}
+#         for gene in geneList:
+#             if refseqDict.has_key(gene) == False:
+#                 continue
+#             startDict[gene]={}
+#             startDict[gene]['sense'] = refseqTable[refseqDict[gene][0]][3]
+#             startDict[gene]['chr'] = refseqTable[refseqDict[gene][0]][2]
+#             startDict[gene]['start'] = getTSSs([gene],refseqTable,refseqDict)
+#             if startDict[gene]['sense'] == '+':
+#                 startDict[gene]['end'] =[int(refseqTable[refseqDict[gene][0]][5])]
+#             else:
+#                 startDict[gene]['end'] = [int(refseqTable[refseqDict[gene][0]][4])]
+#             startDict[gene]['name'] = refseqTable[refseqDict[gene][0]][12]
+#     return startDict
 
 
 #generic function to get the TSS of any gene
-def getTSSs(geneList,refseqTable,refseqDict):
-    #refseqTable,refseqDict = importRefseq(refseqFile)
-    if len(geneList) == 0:
-        refseq = refseqTable
-    else:
-        refseq = refseqFromKey(geneList,refseqDict,refseqTable)
-    TSS = []
-    for line in refseq:
-        if line[3] == '+':
-            TSS.append(line[4])
-        if line[3] == '-':
-            TSS.append(line[5])
-    TSS = map(int,TSS)
+# def getTSSs(geneList,refseqTable,refseqDict):
+#     #refseqTable,refseqDict = importRefseq(refseqFile)
+#     if len(geneList) == 0:
+#         refseq = refseqTable
+#     else:
+#         refseq = refseqFromKey(geneList,refseqDict,refseqTable)
+#     TSS = []
+#     for line in refseq:
+#         if line[3] == '+':
+#             TSS.append(line[4])
+#         if line[3] == '-':
+#             TSS.append(line[5])
+#     TSS = map(int,TSS)
     
-    return TSS
+#     return TSS
 
 
 #12/29/08
 #refseqFromKey(refseqKeyList,refseqDict,refseqTable)
 #function that grabs refseq lines from refseq IDs
-def refseqFromKey(refseqKeyList,refseqDict,refseqTable):
-    typeRefseq = []
-    for name in refseqKeyList:
-        if refseqDict.has_key(name):
-            typeRefseq.append(refseqTable[refseqDict[name][0]])
-    return typeRefseq
+# def refseqFromKey(refseqKeyList,refseqDict,refseqTable):
+#     typeRefseq = []
+#     for name in refseqKeyList:
+#         if refseqDict.has_key(name):
+#             typeRefseq.append(refseqTable[refseqDict[name][0]])
+#     return typeRefseq
 
 
 
@@ -219,30 +219,30 @@ def refseqFromKey(refseqKeyList,refseqDict,refseqTable):
 #importRefseq
 #takes in a refseq table and makes a refseq table and a refseq dictionary for keying the table
 
-def importRefseq(refseqFile, returnMultiples = False):
+# def importRefseq(refseqFile, returnMultiples = False):
 
-    '''
-    opens up a refseq file downloaded by UCSC
-    '''
-    refseqTable = parseTable(refseqFile,'\t')
-    refseqDict = {}
-    ticker = 1
-    for line in refseqTable[1:]:
-        if refseqDict.has_key(line[1]):
-            refseqDict[line[1]].append(ticker)
-        else:
-            refseqDict[line[1]] = [ticker]
-        ticker = ticker + 1
+#     '''
+#     opens up a refseq file downloaded by UCSC
+#     '''
+#     refseqTable = parseTable(refseqFile,'\t')
+#     refseqDict = {}
+#     ticker = 1
+#     for line in refseqTable[1:]:
+#         if refseqDict.has_key(line[1]):
+#             refseqDict[line[1]].append(ticker)
+#         else:
+#             refseqDict[line[1]] = [ticker]
+#         ticker = ticker + 1
 
-    multiples = []
-    for i in refseqDict:
-        if len(refseqDict[i]) > 1:
-            multiples.append(i)
+#     multiples = []
+#     for i in refseqDict:
+#         if len(refseqDict[i]) > 1:
+#             multiples.append(i)
 
-    if returnMultiples == True:
-        return refseqTable,refseqDict,multiples
-    else:
-        return refseqTable,refseqDict
+#     if returnMultiples == True:
+#         return refseqTable,refseqDict,multiples
+#     else:
+#         return refseqTable,refseqDict
 
 
 #==================================================================

@@ -13,10 +13,10 @@ import argparse
 import shutil
 
 from pathlib import Path
+from src.utils.annotation import makeStartDict
 from src.utils.conversion import bed_to_gff3, gtf_to_gff3
 from src.utils.file_helper import get_path, check_file, check_path
 from typing import Any, Dict
-
 
 def str2bool(
     v: str
@@ -32,14 +32,13 @@ def str2bool(
     Returns:
         bool: Booleanised string
     """
-    if isinstance(v, bool):
-        return v
-    if v.lower() == 'true':
+    
+    if v.lower() == "true":
         return True
-    elif v.lower() == 'false':
+    elif v.lower() == "false":
         return False
     else:
-        raise argparse.ArgumentTypeError('Boolean value expected.')
+        raise argparse.ArgumentTypeError("Boolean value expected.")
 
 
 def parseArgs() -> argparse.Namespace:
@@ -69,7 +68,7 @@ def parseArgs() -> argparse.Namespace:
     #Printing arguments to the command line
     args = parser.parse_args()
 
-    print('Called with args:')
+    print("Called with args:")
     print(f"{args}\n")
 
     #Ensuring that argument files exist
@@ -87,14 +86,33 @@ def main():
 
     #Parse arguments from the command line
     args = parseArgs()
+    path = get_path()
 
     #Initialising variables
+    # annotFile = genomeDict[upper(args.genome)]
     debug = False
-    path = get_path()
+    genomeDict = {
+        "HG18": Path(path, "data", "annotation", "hg18_refseq.ucsc"),
+        "HG19": Path(path, "data", "annotation", "hg19_refseq.ucsc"),
+	    "HG38": Path(path, "data", "annotation", "hg38_refseq.ucsc"),
+        "MM8":  Path(path, "data", "annotation", "mm8_refseq.ucsc"),
+        "MM9":  Path(path, "data", "annotation", "mm9_refseq.ucsc"),
+        "MM10": Path(path, "data", "annotation", "mm10_refseq.ucsc"),
+        }
+    stitchWindow = int(args.stitch)
+    tssWindow = int(args.tss)
+
+    # if tssWindow != 0:
+    #     removeTSS = True
+    # else:
+    #     removeTSS = False
     if args.control:        
         bamFileList = [args.rankby, args.control]
     else:
         bamFileList = [args.rankby]
+    # if options.bams:
+    #     bamFileList += options.bams.split(',')
+    #     bamFileLIst = ROSE_utils.uniquify(bamFileList)
 
     #Ensuring necessary output directories exist
     output = check_path(Path(path, args.output))
@@ -104,66 +122,36 @@ def main():
     #Copying/creating the input .gff3 file
     if Path(args.input).suffix == ".bed":
         if args.verbose:
-            print("Converting input .bed file to .gff3 format\n")
+            print("Converting input .bed file to .gff3 format")
         inputGFFFile = str(Path(path, "output", "gff", Path(args.input).stem)) + ".gff3"
-        bed_to_gff3(args.input, inputGFFFile)
+        # bed_to_gff3(args.input, inputGFFFile)
 
     elif Path(args.input).suffix == ".gtf":
         if args.verbose:
-            print("Converting input .gtf file to .gff3 format\n")
+            print("Converting input .gtf file to .gff3 format")
         inputGFFFile = str(Path(path, "output", "gff", Path(args.input).stem)) + ".gff3"
-        gtf_to_gff3(args.input, inputGFFFile, full=False)
+        # gtf_to_gff3(args.input, inputGFFFile, full=False)
 
     elif Path(args.input).suffix == ".gff" or Path(args.input).suffix == ".gff3":
         if args.verbose:
-            print("Copying input .gff file to new directory\n")
+            print("Copying input .gff file to new directory")
         inputGFFFile = str(Path(path, "output", "gff", Path(args.input).stem)) + ".gff3"
-        shutil.copyfile(args.input, inputGFFFile)
+        # shutil.copyfile(args.input, inputGFFFile)
         
     else:
-        print("fail")
+        raise ValueError("Input file must be a .bed, .gtf, .gff or gff3 file")
 
-    # if options.bams:
-    #     bamFileList += options.bams.split(',')
-    #     bamFileLIst = ROSE_utils.uniquify(bamFileList)
-    # #optional args
-
-    # #Stitch parameter
-    # stitchWindow = int(options.stitch)
-    
-    # #tss options
-    # tssWindow = int(options.tss)
-    # if tssWindow != 0:
-    #     removeTSS = True
-    # else:
-    #     removeTSS = False
-
-    # #GETTING THE BOUND REGION FILE USED TO DEFINE ENHANCERS
-    # print('USING %s AS THE INPUT GFF' % (inputGFFFile))
-    # inputName = inputGFFFile.split('/')[-1].split('.')[0]
-
-
-    # #GETTING THE GENOME
-    # genome = options.genome
-    # print('USING %s AS THE GENOME' % genome)
-
-
-    # #GETTING THE CORRECT ANNOT FILE
-    # cwd = os.getcwd()
-    # genomeDict = {
-    #     'HG18':'%s/annotation/hg18_refseq.ucsc' % (cwd),
-    #     'MM9': '%s/annotation/mm9_refseq.ucsc' % (cwd),
-    #     'HG19':'%s/annotation/hg19_refseq.ucsc' % (cwd),
-	# 'HG38':'%s/annotation/hg38_refseq.ucsc' % (cwd),
-    #     'MM8': '%s/annotation/mm8_refseq.ucsc' % (cwd),
-    #     'MM10':'%s/annotation/mm10_refseq.ucsc' % (cwd),
-    #     }
+    #Setting the bound region file to define enhancers
+    if args.verbose:
+        print(f"Using {inputGFFFile} as the input .gff file\n")
+    inputName = str(Path(inputGFFFile).stem)
 
     # annotFile = genomeDict[upper(genome)]
 
-    # #MAKING THE START DICT
-    # print('MAKING START DICT')
-    # startDict = ROSE_utils.makeStartDict(annotFile)
+    #Making the start dict
+    if args.verbose:
+        print("Making the start dict")
+    startDict = makeStartDict(check_file(str(genomeDict[args.genome.upper()])))
 
 
     # #LOADING IN THE BOUND REGION REFERENCE COLLECTION
